@@ -32,6 +32,15 @@ int verifica_reservada(const char* frase, const char* reservadas[], int num_rese
     return 0;
 }
 
+void remove_comentarios(char* frase)
+{
+    char* comentario = strchr(frase, ';'); // Procura o caractere ';'
+    if (comentario != NULL)
+    {
+        *comentario = '\0'; // Trunca a linha no ponto onde o comentário começa
+    }
+}
+
 
 int main()
 {
@@ -59,6 +68,14 @@ int main()
     while(fgets(line, sizeof(line), input_file))//fgets tenta ler cada linha do arquivo e armazenar no vetor temporário line, se for bem-sucedido retorna um ponteiro para line, se não retorna NULL, funcionando assim como condição para o laço
     {
         line[strcspn(line, "\n")] = '\0'; //strcspn procura a substring passada dentro da string passada e retorna seu índice. Substituo "\n" por '\0' para evitar problemas de comparação posteriores com "ADD" por exemplo
+        
+        remove_comentarios(line); // Remove comentários da linha
+
+        if (strlen(line) == 0) // Ignora linhas vazias (após remover comentários)
+        {
+            continue;
+        }
+
         if(verifica_binario(line) == 0)
         {
             if(verifica_reservada(line, reservadas, num_reservadas) == 0) //Se não for binário e nem reservada, trata-se de um erro de sintaxe
@@ -78,5 +95,3 @@ int main()
     fclose(input_file);
     fclose(output_file);
 }
-
-//testando comentario
